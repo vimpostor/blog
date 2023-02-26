@@ -1,0 +1,3 @@
+[submodule "themes/zola-aurora"]
+	path = themes/zola-aurora
+	url = https://github.com/vimpostor/zola-aurora.git
