@@ -2,12 +2,13 @@ base_url = "https://blog.mggross.com"
 compile_sass = true
 build_search_index = true
 generate_feed = true
+minify_html = true
 
 title = "Magnus' blog"
 description = "My personal blog"
 
+theme = "zola-aurora"
+
 [markdown]
 highlight_code = true
 highlight_theme = "ayu-dark"
-
-[extra]
