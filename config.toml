@@ -4,7 +4,7 @@ build_search_index = true
 generate_feed = true
 minify_html = true
 
-title = "Magnus' blog"
+title = "Personal blog by Magnus Groß"
 description = "My personal blog"
 
 theme = "zola-aurora"
