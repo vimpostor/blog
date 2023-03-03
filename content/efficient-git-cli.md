@@ -3,7 +3,7 @@ title = "Efficient command line git usage"
 date = 2023-03-02
 +++
 
-Here are some command line git tricks that I have come up over the years to improve my efficiency. I will mostly focus on vanilla git commands because that is the interesting stuff, but it goes without saying that [Github CLI](https://github.com/cli/cli) is a good productivity boost as well.
+Here are some command line git tricks that I have come up with over the years to improve my efficiency. I will mostly focus on vanilla git commands because that is the interesting stuff, but it goes without saying that [Github CLI](https://github.com/cli/cli) is a good productivity boost as well.
 Unfortunately it only works with Github.
 
 You can also find all of the below snippets in my public [dotfiles repo](https://github.com/vimpostor/dotfiles).
@@ -12,9 +12,10 @@ You can also find all of the below snippets in my public [dotfiles repo](https:/
 
 Most people obviously already know that they don't need to add the fork repo as a new remote to checkout the PR branch, because a new branch is automatically created on the upstream repo.
 
-However even checking out that branch is a flawed solution for multiple reasons. First of all it will pollute your local checkout because it will permanently create that branch until you manually delete it. That's just an annoyance though. The real problem is that the branch will cause you trouble later on, when the PR author force-pushes and you want to pull the branch again.
+However even checking out that branch is a flawed solution for multiple reasons. First of all it will pollute your local clone because it will permanently create that branch until you manually delete it. That's just an annoyance though. The real problem is that the branch will cause you trouble later on, when the PR author force-pushes and you want to pull the branch again.
 
 The better solution is to not checkout the branch at all but to fetch the branch and use the largely unknown `FETCH_HEAD` git feature. Not even the [Github CLI](https://github.com/cli/cli) tool uses this feature.
+It's a temporary reference that always points to the last fetched content. Hence we can use it to checkout something temporarily.
 
 I have implemented this in the following `gcpr` function, that you can call for example as `gcpr 58` to check out PR #58. This is completely immune to force-pushes as `FETCH_HEAD` doesn't care about that. And as a bonus it also doesn't pollute your local branch list.
 
@@ -54,7 +55,9 @@ Of course I needed to automate this with the following zsh function, so now I ju
 function greb() {
 	UPSTREAM="$(git remote | grep upstream || git remote | grep origin)"
 	BRANCH="$UPSTREAM/$(git branch -rl \*/HEAD | head -1 | rev | cut -d/ -f1 | rev)"
-	git fetch "$UPSTREAM" && git --no-pager log --reverse --pretty=tformat:%s "$(git merge-base HEAD "$BRANCH")".."$BRANCH" && git rebase "$BRANCH"
+	git fetch "$UPSTREAM" && \
+	git --no-pager log --reverse --pretty=tformat:%s "$(git merge-base HEAD "$BRANCH")".."$BRANCH" && \
+	git rebase "$BRANCH"
 }
 ```
 
