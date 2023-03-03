@@ -8,6 +8,25 @@ Unfortunately it only works with Github.
 
 You can also find all of the below snippets in my public [dotfiles repo](https://github.com/vimpostor/dotfiles).
 
+# Rebasing automatically
+
+Often while your pull request is in the review pipeline, you are required to rebase on top of the latest upstream changes.
+Of course I needed to automate this with the following zsh function, so now I just need to type `greb` (not to be confused with `grep`) and it will automatically pull the last changes for the default upstream branch, rebase on top of that and print a nice overview of the commits and a shortdiff of what changed upstream since the last branch-off point.
+
+```bash
+function greb() {
+	UPSTREAM="$(git remote | grep upstream || git remote | grep origin)"
+	BRANCH="$UPSTREAM/$(git branch -rl \*/HEAD | head -1 | rev | cut -d/ -f1 | rev)"
+	git fetch "$UPSTREAM" && \
+	git --no-pager log --reverse --pretty=tformat:%s "$(git merge-base HEAD "$BRANCH")".."$BRANCH" && \
+	git rebase "$BRANCH"
+}
+```
+
+The above assumes that you named the upstream git remote `upstream`, otherwise it will fallback to `origin` which as a nice side effect allows it to work for repos where you are your own "upstream".
+
+The name of the upstream default branch is figured out automatically, so it works for any arbitrary repo as long as the remote is appropriately named.
+
 # Checking out PRs
 
 Most people obviously already know that they don't need to add the fork repo as a new remote to checkout the PR branch, because a new branch is automatically created on the upstream repo.
@@ -45,25 +64,6 @@ git config --global core.pager '/usr/share/git/diff-highlight/diff-highlight| le
 ```
 
 There also is [delta](https://github.com/dandavison/delta) with even more features such as syntax highlighting, but for me personally that doesn't really help with the actual diff.
-
-# Rebasing automatically
-
-Often while your pull request is in the review pipeline, you are required to rebase on top of the latest upstream changes.
-Of course I needed to automate this with the following zsh function, so now I just need to type `greb` (not to be confused with `grep`) and it will automatically pull the last changes for the default upstream branch, rebase on top of that and print a nice overview of the commits and a shortdiff of what changed upstream since the last branch-off point.
-
-```bash
-function greb() {
-	UPSTREAM="$(git remote | grep upstream || git remote | grep origin)"
-	BRANCH="$UPSTREAM/$(git branch -rl \*/HEAD | head -1 | rev | cut -d/ -f1 | rev)"
-	git fetch "$UPSTREAM" && \
-	git --no-pager log --reverse --pretty=tformat:%s "$(git merge-base HEAD "$BRANCH")".."$BRANCH" && \
-	git rebase "$BRANCH"
-}
-```
-
-The above assumes that you named the upstream git remote `upstream`, otherwise it will fallback to `origin` which as a nice side effect allows it to work for repos where you are your own "upstream".
-
-The name of the upstream default branch is figured out automatically, so it works for any arbitrary repo as long as the remote is appropriately named.
 
 # Automatic fixup
 
