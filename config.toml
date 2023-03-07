@@ -12,3 +12,8 @@ theme = "zola-aurora"
 [markdown]
 highlight_code = true
 highlight_theme = "ayu-dark"
+
+[extra]
+socials = [
+	{ name = "Github", url = "https://github.com/vimpostor" },
+]
