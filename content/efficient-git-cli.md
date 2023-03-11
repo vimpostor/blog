@@ -1,6 +1,9 @@
 +++
 title = "Efficient command line git usage"
 date = 2023-03-02
+
+[taxonomies]
+tags = ["git"]
 +++
 
 Here are some command line git tricks that I have come up with over the years to improve my efficiency. I will mostly focus on vanilla git commands because that is the interesting stuff, but it goes without saying that [Github CLI](https://github.com/cli/cli) is a good productivity boost as well.

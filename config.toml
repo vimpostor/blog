@@ -7,6 +7,10 @@ minify_html = true
 title = "Personal blog by Magnus Groß"
 description = "My personal blog"
 
+taxonomies = [
+	{ name = "tags", feed = true },
+]
+
 theme = "zola-aurora"
 
 [markdown]
@@ -14,6 +18,10 @@ highlight_code = true
 highlight_theme = "ayu-dark"
 
 [extra]
+menu = [
+	{ name = "About", url = "/about" },
+	{ name = "Tags", url = "/tags" },
+]
 socials = [
 	{ name = "Github", url = "https://github.com/vimpostor" },
 ]
