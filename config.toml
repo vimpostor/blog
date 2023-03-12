@@ -23,6 +23,7 @@ menu = [
 	{ name = "Tags", url = "/tags" },
 ]
 socials = [
-	{ name = "Github", url = "https://github.com/vimpostor" },
+	{ icon = "github", url = "https://github.com/vimpostor" },
 ]
 license = { name = "CC-BY-SA-4.0", url = "https://creativecommons.org/licenses/by-sa/4.0/" }
+icons_path = "static/icons/feather/icons"
