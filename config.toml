@@ -18,6 +18,7 @@ highlight_code = true
 highlight_theme = "ayu-dark"
 
 [extra]
+favicon = "static/icons/favicon.svg"
 menu = [
 	{ name = "About", url = "/about" },
 	{ name = "Tags", url = "/tags" },
