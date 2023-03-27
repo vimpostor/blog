@@ -114,7 +114,7 @@ The true magic unfolds when you write a script that does all of this automatical
 In the example below I bisect a regression in [vim](https://github.com/vim/vim)'s codebase. The automatic test is already written and exits with code `0` if it passes and if it fails it returns with a non-zero code. This is how git knows whether a revision is good or bad.
 Then you can just pass the script to `git bisect run` and leave it running for a while.
 
-Now enjoy this automatic bisection over a range of 229 commits, finding the bad commit within only 2 minutes.
+Now enjoy this automatic bisection over a range of 229 commits, finding the bad commit within only 2 minutes of iteratively compiling and testing different commits.
 
 {{ asciinema(id=570941) }}
 
