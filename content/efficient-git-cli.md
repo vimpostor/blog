@@ -100,3 +100,24 @@ alias gcea='git commit --amend --no-edit -a'
 ```
 
 If you only want to amend staged changes, feel free to drop the `-a`.
+
+# Fully automated git bisect
+
+When a regression is introduced into a codebase, using a debugger to find the source of the problem might be a bit overkill.
+Instead it is often much more practical to use `git bisect` to find the commit that introduced the regression in the first place, especially if you are unfamiliar with the codebase. With any luck, the context of the offending commit provides enough information to fix the bug, avoiding a dreaded session with your _debugging duck_ of choice altogether!
+
+Since `git bisect` uses binary search, it finds the introduction of the regression reasonably fast in logarithmic time complexity.
+However manually compiling, testing and entering `git bisect good` or `git bisect bad` for every revision gets boring very quickly.
+
+The true magic unfolds when you write a script that does all of this automatically. You start it with `git bisect run`, go grab a cup of coffee for a couple minutes, and when you're back, git has finished and already presents the problematic commit to you, no further actions required.
+
+In the example below I bisect a regression in [vim](https://github.com/vim/vim)'s codebase. The automatic test is already written and exits with code `0` if it passes and if it fails it returns with a non-zero code. This is how git knows whether a revision is good or bad.
+Then you can just pass the script to `git bisect run` and leave it running for a while.
+
+Now enjoy this automatic bisection over a range of 229 commits, finding the bad commit within only 2 minutes.
+
+{{ asciinema(id=570941) }}
+
+In this case it was less of a regression and rather a slight change in behaviour, that I was able to work around downstream instead.
+
+Sometimes you don't know if a revision is good or bad. This can be the case when there is a temporary compilation issue over a range of commits for example. In that case you achieve the equivalent of `git bisect skip` by returning with the special exit code `125`.
