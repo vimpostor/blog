@@ -101,7 +101,7 @@ alias gcea='git commit --amend --no-edit -a'
 
 If you only want to amend staged changes, feel free to drop the `-a`.
 
-# Fully automated git bisect
+# Fully automated bisection
 
 When a regression is introduced into a codebase, using a debugger to find the source of the problem might be a bit overkill.
 Instead it is often much more practical to use `git bisect` to find the commit that introduced the regression in the first place, especially if you are unfamiliar with the codebase. With any luck, the context of the offending commit provides enough information to fix the bug, avoiding a dreaded session with your _debugging duck_ of choice altogether!
