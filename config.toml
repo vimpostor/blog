@@ -27,5 +27,4 @@ socials = [
 	{ icon = "github", url = "https://github.com/vimpostor" },
 	{ icon = "gitlab", url = "https://gitlab.com/vimpostor" },
 ]
-license = { name = "CC-BY-SA-4.0", url = "https://creativecommons.org/licenses/by-sa/4.0/" }
 icons_path = "static/icons/feather/icons"
