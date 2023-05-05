@@ -4,9 +4,6 @@ date = 2023-05-05
 
 [taxonomies]
 tags = ["mutt"]
-
-[extra]
-toc = false
 +++
 
 # Introduction
@@ -21,7 +18,7 @@ Following the Unix philosophy, I only use mutt for viewing mails. For mail proce
 - [vim](https://www.vim.org/): For writing the mails
 - [notmuch](https://notmuchmail.org/): Mail indexer
 
-This might seem overkill at first glance, but it gives you total control over your mail workflow. How all these tools interact with each other is best left for another blog post for a future time.
+This might seem overkill at first glance, but it gives you total control over your mail workflow. How all these tools interact with each other is better left for another blog post.
 
 # Address autocompletion
 
@@ -37,7 +34,7 @@ Since we are already using notmuch as a mail indexer, it is trivial to output al
 notmuch address --deduplicate=address --output=sender --output=recipients '*'
 ```
 
-As to be expected from a mail indexer, notmuch is very fast with this and outputs all addresses in a matter of a few milliseconds, no matter whether your inbox contains a few hundred or literally millions of messages.
+As to be expected from a mail indexer, notmuch is very fast with this and outputs all addresses in a matter of a few milliseconds, regardless of whether your inbox contains a few hundred or literally millions of messages.
 If we want to use these addresses in mutt, we have to translate them into a specific query format, so I came up with the following shell one-liner using [jq](https://stedolan.github.io/jq/):
 
 ```bash
@@ -66,12 +63,12 @@ set query_format = "%4c %t %-35.35a %-25.25n %?e?(%e)?"
 
 # Show extra information
 
-But wait, there's more! The query command was originally intended to get contacts from external services like a LDAP server and has the ability to show extra information for each entry in the autocompletion menu.
+But wait, there's more! The query command was originally intended to get contacts from external services like an LDAP server and has the ability to show extra information for each entry in the autocompletion menu.
 Let's abuse this feature to show the subject of the most recent email sent or received for each address!
 
 Implementing this is a little bit more involved as we can no longer just use `notmuch` for this and have to iterate through all mails.
 I have written [this shell script](https://github.com/vimpostor/dotfiles/blob/master/scripts/aliases-gen.sh) to do just that and run it with a systemd timer after each mail sync to generate the aliases with subject information.
-It will cache previous runs so that only new mails will be processed on subsequent runs. Still, if you have millions of mails, for the first run you might prefer the simpler variant without subject information from above.
+It will cache previous runs so that only new mail will be processed on subsequent runs. Still, if you have millions of mails, for the first run you might prefer the simpler variant without subject information from above.
 
 Now with this extra info generated, we can see the most recent email subject next to each email address.
 For example, if one were to autocomplete the query "John", mutt would show the following options with the subject in the last column:
@@ -82,5 +79,43 @@ For example, if one were to autocomplete the query "John", mutt would show the f
 3 john.dev@example.com  John Dev     ([PATCH] Refactor tests)
 ```
 
-For people with multiple email addresses this really helps distinguishing them.
+For people that have multiple email addresses, this really helps at distinguishing them.
 This is only a short glimpse at what is possible with mutt's customizability.
+
+# Autocompletion from vim
+
+Some people like to edit the email headers such as `To:`, `CC:` and `Subject:` directly in vim.
+In order to stop mutt from asking for this information, the following config snippet will pass the headers to the vim buffer instead:
+
+```
+set edit_headers
+set autoedit
+```
+
+In vim we can then use this custom `omnifunc` for the `mail` filetype to replicate the autocompletion from above:
+
+```vim
+func CompleteAddr(findstart, base)
+	if a:findstart
+		if getline(line('.')) =~ '^\(To\|B\?CC\): '
+			return searchpos(' ', 'bnW', line('.'))[1]
+		endif
+		return -3
+	endif
+	return readfile(expand('~/.cache/mutt/aliases'))
+		\ ->filter({_, v -> v =~ a:base})
+		\ ->map({_, v -> v->split('\t')})
+		\ ->map({_, v -> #{
+		    \ word: v[:1]->reverse()->join()->trim(),
+		    \ menu: printf('(%s)', v[2:]->join())
+		\ }})
+endfunc
+
+au FileType mail setlocal omnifunc=CompleteAddr
+```
+
+Here we use a giant filter-map chain to transform the mutt alias file into the final vim autocompletion list. By providing the `menu` field, vim can show the subject line after the autocompletion.
+
+![Screenshot](https://user-images.githubusercontent.com/21310755/236573792-778c4323-fac2-4e33-8faa-637e25a68232.png)
+
+Alternatively one could use the `info` field to show the subject in a popup window next to the autocompletion, but this would lose the advantage of being able to see all subjects at once.
