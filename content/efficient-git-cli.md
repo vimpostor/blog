@@ -36,7 +36,7 @@ Most people obviously already know that they don't need to add the fork repo as 
 
 However even checking out that branch is a flawed solution for multiple reasons. First of all it will pollute your local clone because it will permanently create that branch until you manually delete it. That's just an annoyance though. The real problem is that the branch will cause you trouble later on, when the PR author force-pushes and you want to pull the branch again.
 
-The better solution is to not checkout the branch at all but to fetch the branch and use the largely unknown `FETCH_HEAD` git feature. Not even the [Github CLI](https://github.com/cli/cli) tool uses this feature.
+The better solution is to not checkout the branch at all but to fetch the branch and use the largely unknown `FETCH_HEAD` git feature.
 It's a temporary reference that always points to the last fetched content. Hence we can use it to checkout something temporarily.
 
 I have implemented this in the following `gcpr` function, that you can call for example as `gcpr 58` to check out PR #58. This is completely immune to force-pushes as `FETCH_HEAD` doesn't care about that. And as a bonus it also doesn't pollute your local branch list.
@@ -109,7 +109,7 @@ Instead it is often much more practical to use `git bisect` to find the commit t
 Since `git bisect` uses binary search, it finds the introduction of the regression reasonably fast in logarithmic time complexity.
 However manually compiling, testing and entering `git bisect good` or `git bisect bad` for every revision gets boring very quickly.
 
-The true magic unfolds when you write a script that does all of this automatically. You start it with `git bisect run`, go grab a cup of coffee for a couple minutes, and when you're back, git has finished and already presents the problematic commit to you, no further actions required.
+The true magic unfolds when you write a script that tests all of this automatically. You start it with `git bisect run`, go grab a cup of coffee for a couple minutes, and when you're back, git has finished and already presents the problematic commit to you, no further actions required.
 
 In the example below I bisect a regression in [vim](https://github.com/vim/vim)'s codebase. The automatic test is already written and exits with code `0` if it passes and if it fails it returns with a non-zero code. This is how git knows whether a revision is good or bad.
 Then you can just pass the script to `git bisect run` and leave it running for a while.
@@ -120,4 +120,4 @@ Now enjoy this automatic bisection over a range of 229 commits, finding the bad 
 
 In this case it was less of a regression and rather a slight change in behaviour, that I was able to work around downstream instead.
 
-Sometimes you don't know if a revision is good or bad. This can be the case when there is a temporary compilation issue over a range of commits for example. In that case you achieve the equivalent of `git bisect skip` by returning with the special exit code `125`.
+Sometimes you also don't know if a revision is good or bad. This can be the case when there is for example a temporary compilation issue over a range of commits. In that case you achieve the equivalent of `git bisect skip` by returning with the special exit code `125`.
