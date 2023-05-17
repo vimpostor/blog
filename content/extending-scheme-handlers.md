@@ -80,7 +80,7 @@ Exec=env U=%u sh -c "pidof spotify && dbus-send --type=method_call --dest=org.mp
 
 Seriously though, don't use this, this is cursed beyond limits and doesn't handle some edge cases correctly.
 
-Instead I implemented a much cleaner and robust solution: There is a [Spotify launcher](https://github.com/kpcyrd/spotify-launcher) application written in Rust, that is basically the official Spotify desktop application but with automatic updates added. So I went ahead and [implemented single instance mode in the launcher directly](https://github.com/kpcyrd/spotify-launcher/pull/23), removing the need for any shell shenanigans. With this patch, opening Spotify links finally works like you would expect:
+Instead I implemented a much cleaner and robust solution: There is a [Spotify launcher](https://github.com/kpcyrd/spotify-launcher) application written in Rust, that is basically the official Spotify desktop application but with automatic updates added. So I went ahead and [implemented single instance support in the launcher directly](https://github.com/kpcyrd/spotify-launcher/pull/23), removing the need for any shell shenanigans. With this patch, opening Spotify links finally works like you would expect:
 
 {{ video(url="https://github.com/vimpostor/blog/assets/21310755/5443f4d4-aec2-401f-971d-e8b73c2a1788") }}
 
