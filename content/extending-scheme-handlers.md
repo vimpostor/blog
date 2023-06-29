@@ -33,7 +33,7 @@ For example, a regular expression can be used with `android:pathAdvancedPattern`
 Linux does not have something comparable to `android:pathAdvancedPattern`, but until there is a proper XDG spec for this we can achieve something very similar by registering a small proxy application as the default web browser. This proxy application would use some predefined and configurable rules to match all opened URLs against a regular expression. If there is a match, the request is delegated to the corresponding application.
 Otherwise if no rules match, then the link is opened in the original default web browser.
 
-I have written a small application just like this called [sphere](https://github.com/vimpostor/sphere) (realistically you could also just use a small shell script), which parses the rules as lines from a configuration file in `~/.config/sphere/config`. The first field of each line is the regular expression to match against and the last field is the corresponding scheme handler.
+I have written a small application just like this called [sphere](https://github.com/vimpostor/sphere) (realistically you could also just redirect with a Greasemonkey script in the browser), which parses the rules as lines from a configuration file in `~/.config/sphere/config`. The first field of each line is the regular expression to match against and the last field is the corresponding scheme handler.
 
 The following simple example opens Spotify links directly in the Spotify desktop application and configures Chromium as the default web browser otherwise:
 
