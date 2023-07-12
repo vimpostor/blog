@@ -1,4 +1,4 @@
-base_url = "https://blog.mggross.com"
+base_url = "https://blog.magross.net"
 compile_sass = true
 build_search_index = true
 generate_feed = true
