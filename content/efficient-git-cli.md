@@ -111,7 +111,7 @@ However manually compiling, testing and entering `git bisect good` or `git bisec
 
 The true magic unfolds when you write a script that tests all of this automatically. You start it with `git bisect run`, go grab a cup of coffee for a couple minutes, and when you're back, git has finished and already presents the problematic commit to you, no further actions required.
 
-In the example below I bisect a regression in [vim](https://github.com/vim/vim)'s codebase. The automatic test is already written and exits with code `0` if it passes and if it fails it returns with a non-zero code. This is how git knows whether a revision is good or bad.
+In the example below I bisect a regression in [vim](https://github.com/vim/vim)'s codebase. The automatic test is already written and exits with code `0` if and only if it passes. This is how git knows whether a revision is good or bad.
 Then you can just pass the script to `git bisect run` and leave it running for a while.
 
 Now enjoy this automatic bisection over a range of 229 commits, finding the bad commit within only 2 minutes of iteratively compiling and testing different commits.
