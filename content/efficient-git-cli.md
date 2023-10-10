@@ -45,13 +45,12 @@ I have implemented this in the following `gcpr` function, that you can call for 
 # Takes the PR number as only argument
 function gcpr() {
 	git fetch -q origin pull/"$*"/head 2>/dev/null || \
-	git fetch -q upstream pull/"$*"/head 2>/dev/null || \
-	git fetch -q origin merge-requests/"$*"/head 2>/dev/null || \
-	git fetch -q upstream merge-requests/"$*"/head && git checkout FETCH_HEAD
+	git fetch -q upstream pull/"$*"/head && \
+	git checkout FETCH_HEAD
 }
 ```
 
-Note that the duplicate lines are needed to be compatible with both Github and Gitlab.
+In addition to Github support, Gitlab support is trivial to add by replacing the `pull/` refs with `merge-requests/` refs.
 
 # Better diffs
 
