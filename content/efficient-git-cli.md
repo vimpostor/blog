@@ -62,7 +62,16 @@ In fact git ships with a sane diff tool called `diff-highlight` capable of all t
 You can enable it with the following command, however note that the exact path may vary based on your distro.
 
 ```bash
-git config --global core.pager '/usr/share/git/diff-highlight/diff-highlight| less'
+git config --global core.pager '/usr/share/git/diff-highlight/diff-highlight| less -x4'
+```
+
+Additionally the diff algorithm can be tweaked in your git config such that it is much easier to visualize which blocks were only moved:
+
+```conf
+[diff]
+	algorithm = patience
+	colormoved = dimmed-zebra
+	colormovedws = ignore-all-space
 ```
 
 There also is [delta](https://github.com/dandavison/delta) with even more features such as syntax highlighting, but for me personally that doesn't really help with the actual diff.
