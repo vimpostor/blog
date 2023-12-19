@@ -1,6 +1,6 @@
 # Blog
 
-This repository contains the content for my personal blog, available at https://blog.grossm.com
+This repository contains the content for my personal blog, available at https://blog.mggross.com
 
 The source code (not to be confused with the content) is shipped separately in a [different repository](https://github.com/vimpostor/zola-aurora).
 
