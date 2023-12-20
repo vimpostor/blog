@@ -1,5 +1,5 @@
 +++
-title = "Extending URI scheme handlers in Linux"
+title = "Extending XDG URI scheme handlers"
 date = 2023-05-17
 
 [taxonomies]
