@@ -74,7 +74,7 @@ Additionally the diff algorithm can be tweaked in your git config such that it i
 	colormovedws = ignore-all-space
 ```
 
-There also is [delta](https://github.com/dandavison/delta) with even more features such as syntax highlighting, but for me personally that doesn't really help with the actual diff.
+There also is [delta](https://github.com/dandavison/delta) with even more features such as syntax highlighting, but for me personally too many colors distract from the actual diff.
 
 # Automatic fixup
 
