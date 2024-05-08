@@ -62,7 +62,7 @@ In fact git ships with a sane diff tool called `diff-highlight` capable of all t
 You can enable it with the following command, however note that the exact path may vary based on your distro.
 
 ```bash
-git config --global core.pager '/usr/share/git/diff-highlight/diff-highlight| less -x4'
+git config --global core.pager '/usr/share/git/diff-highlight/diff-highlight| less'
 ```
 
 Additionally the diff algorithm can be tweaked in your git config such that it is much easier to visualize which blocks were only moved:
