@@ -22,7 +22,7 @@ In fact, I dare you to press `F12` and enable simulated throttling in the networ
 The benefits are not limited to the client side only. The server side will appreciate some minimalism just as much.
 When simulating a heavy load with [vegeta](https://github.com/tsenart/vegeta), I can go well over 10000 accesses per second until I even start seeing barely any latency in response time, no load-balancing needed.
 
-The very website you are viewing right now fits in less than **20kB**, including the entire CSS and SVG favicon data and the 0 bytes of shipped Javascript code.
+The very website you are viewing right now fits in less than **15kB**, including the entire CSS and SVG favicon data and the 0 bytes of shipped Javascript code.
 And there is no need at all to make a compromise on design, features or responsiveness.
 All the really useful features are supported natively in CSS anyway, for example [prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme) can be used to follow the system dark mode without the need for any Javascript.
 Heck, CSS even supports fancy [animations](https://developer.mozilla.org/en-US/docs/Web/CSS/animation), if you want to go really wild.
