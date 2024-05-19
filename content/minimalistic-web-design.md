@@ -36,7 +36,7 @@ All you are doing is increasing the load time of your website for what is basica
 It's ironic, how Apple users are known for being very picky when it comes to choosing non-native apps on MacOS:
 Using an inconsistent UI on the desktop is a war crime, but when you do it on the web, then you are suddenly adding character to your design.
 
-There also is no sane way to [load fonts](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display) without annoying the user. If you use `font-display: block`, then you keep the user waiting even though the text is technically already ready.
+There is also no sane way to [load fonts](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display) without annoying the user. If you use `font-display: block`, then you keep the user waiting even though the text is technically already ready.
 Even worse, if you use the recommended `font-display: swap`, then the user will see a very visible flicker once the font swaps in.
 Granted, this usually only happens once on the first uncached page-load, but it is one of those things you can't unsee, when you have seen it once.
 
