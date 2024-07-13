@@ -12,9 +12,8 @@ toc = false
 Recently a blog post called [JavaScript Bloat in 2024](https://tonsky.me/blog/js-bloat/) made the rounds, essentially putting up a wall of shame for the most bloated websites, with Slack taking the crown shipping a whopping 55MB of bloat in Javascript alone.
 If this is what modern web development best practices have ended up in, then it is not surprising that people think they need a CDN, load balancing and a Kubernetes cluster just to deploy their simple blog, which ideally would just amount to serving a bunch of static files.
 
-Personally, I run this blog on a single virtual server and I often get asked why I don't use something like Github Pages, after all I could get the benefits of a global CDN for free.
-First of all I just like to self-host all my own stuff, because it gives me total control over everything.
-But realistically, there really is no advantage to using a CDN for simple websites like a blog.
+Personally, I run this blog on a single virtual server and I see absolutely no advantage in hosting it on something like Github Pages, despite it being completely free.
+Not only would I lose the control that I have when I self-host, but realistically there really is no point in using a CDN for simple websites such as a blog.
 
 Following some basic web hygiene, any website will still load reasonably fast even when accessed on a spotty connection from the other side of the globe.
 In fact, I dare you to press `F12` and enable simulated throttling in the network settings, then reload this website. It will probably still load faster than most other websites over a stable fiber-optic connection.
@@ -39,6 +38,8 @@ Using an inconsistent UI on the desktop is a war crime, but when you do it on th
 There is also no sane way to [load fonts](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display) without annoying the user. If you use `font-display: block`, then you keep the user waiting even though the text is technically already ready.
 Even worse, if you use the recommended `font-display: swap`, then the user will see a very visible flicker once the font swaps in.
 Granted, this usually only happens once on the first uncached page-load, but it is one of those things you can't unsee, when you have seen it once.
+
+In the past the argument could be made that loading fonts from a CDN at least saves some bandwidth, because identical resources were shared between different websites that use the same CDN. Nowadays, this is no longer the case, as [the cache is not shared between domains anymore](https://developer.chrome.com/blog/http-cache-partitioning).
 
 To top it all off, many websites delegate their fonts to `fonts.google.com`, making sure that everyone pays their fair share of data collection taxes to Big Brother.
 

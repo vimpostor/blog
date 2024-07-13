@@ -1,7 +1,7 @@
 base_url = "https://blog.mggross.com"
 compile_sass = true
 build_search_index = true
-generate_feed = true
+generate_feeds = true
 minify_html = true
 
 title = "Personal blog by Magnus Groß"
