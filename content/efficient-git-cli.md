@@ -19,7 +19,7 @@ Of course I needed to automate this with the following zsh function, so now I ju
 ```bash
 function greb() {
 	UPSTREAM="$(git remote | grep upstream || git remote | grep origin)"
-	BRANCH="$UPSTREAM/$(git branch -rl \*/HEAD | head -1 | rev | cut -d/ -f1 | rev)"
+	BRANCH="${$(git symbolic-ref -q --short "refs/remotes/$UPSTREAM/HEAD"):-"$UPSTREAM/master"}"
 	git fetch "$UPSTREAM" && \
 	git --no-pager log --reverse --pretty=tformat:%s "$(git merge-base HEAD "$BRANCH")".."$BRANCH" && \
 	git rebase "$BRANCH"
