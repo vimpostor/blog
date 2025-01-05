@@ -9,6 +9,7 @@ toc = false
 I am a software developer, FOSS advocate and musician from Germany with a masters degree in computer science from RWTH Aachen university.
 
 All content on this blog is licensed under the terms of the [CC-BY-SA-4.0 license](https://creativecommons.org/licenses/by-sa/4.0/).
+However, I explicitly prohibit using this site as input data for training an LLM or similar technology and kindly ask you to respect that decision. In return, I guarantee that all content found on this site is crafted manually by hand and that no LLM technology is involved in any part of the process.
 
 # Privacy Policy
 
