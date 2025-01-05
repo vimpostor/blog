@@ -56,6 +56,13 @@ Now that we have all the system call arguments, we can decide if we want to allo
 In both cases we need to use the `struct seccomp_notif_resp *resp` parameter .
 If we want to allow the system call normally, we can just set its `flags` field to [SECCOMP_USER_NOTIF_FLAG_CONTINUE](https://man.archlinux.org/man/seccomp_unotify.2.html#SECCOMP_USER_NOTIF_FLAG_CONTINUE) and send back the response with [SECCOMP_IOCTL_NOTIF_SEND](https://man.archlinux.org/man/seccomp_unotify.2.html#SECCOMP_IOCTL_NOTIF_SEND).
 
+```c
+resp->flags |= SECCOMP_USER_NOTIF_FLAG_CONTINUE;
+resp->error = 0;
+resp->val = 0;
+ret = ioctl(listener, SECCOMP_IOCTL_NOTIF_SEND, resp)
+```
+
 However, it becomes slightly more involved if we want to modify the system call arguments.
 In that case we need to open the faked file on the supervisor side, pretend like the originally intended system call worked and return the file descriptor number of the faked file to the traced process. Except there is the huge problem that the file descriptor will obviously not be valid in the target process.
 
@@ -71,9 +78,9 @@ struct seccomp_notif_addfd addfd = {};
 addfd.id = req->id;
 addfd.flags = SECCOMP_ADDFD_FLAG_SEND;
 addfd.srcfd = ret;
-ret = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd);
-// (...)
 resp->error = 0;
+resp->val = ret
+ret = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd);
 close(addfd.srcfd);
 ```
 
