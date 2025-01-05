@@ -49,7 +49,11 @@ Just keep in mind to do the [old Unix dance of just using async-signal-safe func
 
 Finally when the supervisor handles an intercepted system call received by `SECCOMP_IOCTL_NOTIF_RECV`, the `struct seccomp_notif *req` contains all the system call's arguments as part of its `data.args` array. Except that is not the whole truth, because while arguments fitting into one register are usually directly visible there, larger arguments (such as the file name to open) are passed as a pointer. Thus, all information that we then get at this stage is a useless pointer pointing into the memory of another process.
 
-So we end up having to open `/proc/$PID/mem` just to read the file name. Luckily we do not get any problems with [yama security policies](https://man.archlinux.org/man/ptrace.2#/proc/sys/kernel/yama/ptrace_scope), as the seccomp operations already require us to have a predefined relationship between the supervisor and supervised process anyway, which in this case means one is the parent of the other.
+```c
+long syscall(SYS_open, const char *pathname, int flags, mode_t mode)
+```
+
+So we end up having to open `/proc/$PID/mem` just to read the `pathname`. Luckily we do not get any problems with [yama security policies](https://man.archlinux.org/man/ptrace.2#/proc/sys/kernel/yama/ptrace_scope), as the seccomp operations already require us to have a predefined relationship between the supervisor and supervised process anyway, which in this case means one is the parent of the other.
 If you feel this is hacky, wait until you think about all the TOCTOU opportunities when we read the memory referred to by just a PID. Here seccomp can help us out: As long as we read it before we continue the syscall **and** confirm the notification ID is still valid with [SECCOMP_IOCTL_NOTIF_ID_VALID](https://man.archlinux.org/man/seccomp_unotify.2.html#SECCOMP_IOCTL_NOTIF_ID_VALID), we are safe.
 
 Now that we have all the system call arguments, we can decide if we want to allow it or modify it and return it with a different file.
