@@ -44,7 +44,7 @@ This is necessary, as otherwise an unprivileged process could [execve](https://m
 Such a malicious filter might, for example, cause an attempt to use setuid to set the caller's user IDs to nonzero values to instead return 0 without actually making the system call.
 {% end %}
 
-On the supervisor side we have to make some extra checks due to a kernel bug that does not notify the supervisor when the supervised process exits. [Since Linux 6.11 the bug is resolved](https://lore.kernel.org/all/20240628021014.231976-2-avagin@google.com/), so in that case the `SECCOMP_IOCTL_NOTIF_RECV` loop is sufficient and will return with `ENOENT`, when the child terminates. However on older kernel versions that `ioctl` would hang forever, so an easy workaround is to install a signal hander for `SIGCHLD` with [sigaction](https://man.archlinux.org/man/sigaction.2).
+On the supervisor side we have to make some extra checks due to a kernel bug that does not notify the supervisor when the supervised process exits. [Since Linux 6.11 the bug is resolved](https://lore.kernel.org/all/20240628021014.231976-2-avagin@google.com/), so in that case the `SECCOMP_IOCTL_NOTIF_RECV` loop is sufficient and will return with `ENOENT`, when the child terminates. However on older kernel versions that `ioctl` would hang forever, so an easy workaround is to install a signal handler for `SIGCHLD` with [sigaction](https://man.archlinux.org/man/sigaction.2).
 Just keep in mind to do the [old Unix dance of just using async-signal-safe functions](https://man.archlinux.org/man/signal-safety.7) inside of it, in particular no allocations or locks. Alternatively it is possible to [epoll](https://man.archlinux.org/man/epoll.7) the file descriptor returned when registering the BPF filter.
 
 Finally when the supervisor handles an intercepted system call received by `SECCOMP_IOCTL_NOTIF_RECV`, the `struct seccomp_notif *req` contains all the system call's arguments as part of its `data.args` array. Except that is not the whole truth, because while arguments fitting into one register are usually directly visible there, larger arguments (such as the file name to open) are passed as a pointer. Thus, all information that we then get at this stage is a useless pointer pointing into the memory of another process.
@@ -89,10 +89,10 @@ Since BPF filters run in kernel space, static checks are done to make sure that 
 For most architectures, the kernel can also JIT compile eBPF to native machine code.
 
 Essentially the BPF instruction set has two registers, A and X, but the kernel C definitions refer to them as `BPF_K` and `BPF_X`.
-We can load into these registers with the `BPF_LD` instruction (e.g. 32-bit wide with `BPF_W`) and we can compare a register value with a given value with `BPF_JMP` instructions.
+We can load into these registers with the `BPF_LD` instruction (e.g. 32-bit wide with `BPF_W`) and `BPF_JMP` instructions allow us to jump based on comparing a register value with a given value.
 For example `BPF_JUMP(BPF_JMP+BPF_JGE+BPF_X, 42, jt, jf)` will increase the instruction pointer by `jt`, if the value in the X register is greater or equal to 42. Otherwise it will increase it by `jf`. The instruction pointer will also further be increased by one after each instruction.
 
-With the `BPF_RET` instruction we can finally return a value, which the kernel will then use to decide what to do with the system call.
+With the `BPF_RET` instruction we can finally return a value, which the kernel then will use to decide what to do with the system call.
 So a BPF filter to intercept a certain set of system calls `nrs` of length `len` would look a little something like this:
 
 ```c
@@ -164,16 +164,7 @@ BPF_STMT(BPF_RET+BPF_K, SECCOMP_RET_USER_NOTIF)
 ```
 
 The first one is reached if none of the checks in the for loop match and simply allows the system call normally. The second one kicks off interception of the system call and will return back to our userspace handler that waits in an `ioctl()` loop with the `SECCOMP_IOCTL_NOTIF_RECV` flag.
-
-For installing the BPF filter we simply use [SECCOMP_SET_MODE_FILTER](https://man.archlinux.org/man/seccomp.2#SECCOMP_SET_MODE_FILTER).
-
-```c
-struct sock_fprog prog = {
-	.len = (unsigned short) i,
-	.filter = filter,
-};
-return seccomp(SECCOMP_SET_MODE_FILTER, flags, &prog);
-```
+For installing the BPF filter we simply use [SECCOMP_SET_MODE_FILTER](https://man.archlinux.org/man/seccomp.2#SECCOMP_SET_MODE_FILTER) at the end.
 
 Finally it should be emphasized that [seccomp unotify should never be used to implement security policy decisions](https://man.archlinux.org/man/seccomp_unotify.2.html#Design_goals;_use_of_SECCOMP_USER_NOTIF_FLAG_CONTINUE). The TOCTOU attacks alone hidden here make this impossible, for example if the supervisor signals `SECCOMP_USER_NOTIF_FLAG_CONTINUE`, the system call will in fact continue, but the process still has a small opportunity window to rewrite the system call arguments before it actually runs.
 However, it is still a great tool to intercept system calls with minimal performance impact.
