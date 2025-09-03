@@ -9,7 +9,7 @@ tags = ["linux"]
 toc = false
 +++
 
-Historically, intercepting Linux [system calls](https://man.archlinux.org/man/syscalls.2) was done with [ptrace](https://man.archlinux.org/man/ptrace.2).
+Historically, intercepting Linux system calls was done with [ptrace](https://man.archlinux.org/man/ptrace.2).
 While ptrace is more commonly known for debugging purposes, one could [easily monitor system calls](https://nullprogram.com/blog/2018/06/23/) by using `PTRACE_SYSCALL` (or even `PTRACE_SYSEMU`) to wait for the traced process to make a system call, then send off `PTRACE_GETREGS` and `PTRACE_SETREGS` to read and write the registers associated with the system call.
 
 So while the Linux kernel always had the facilities to monitor, fake, modify and restrict system calls, the glaring problem with ptrace is that it is very slow, as it stops twice for every system call (unless `PTRACE_SYSEMU` is used) and there is no way to natively filter for a specific set of system calls. It gets worse, because reading and writing to the registers is incredibly cumbersome and one quickly encounters architecture-specific quirks.
@@ -39,7 +39,7 @@ A few special prerequisites have to be met to make this work. First the child pr
 prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
 ```
 
-This is necessary, as otherwise an unprivileged process could [execve](https://man.archlinux.org/man/execve.2) a [setuid](https://man.archlinux.org/man/setuid.2) program with a malicious filter attached.
+This is necessary, as otherwise an unprivileged process could execute a [setuid](https://man.archlinux.org/man/setuid.2) program with a malicious filter attached.
 {% quote() %}
 Such a malicious filter might, for example, cause an attempt to use setuid to set the caller's user IDs to nonzero values to instead return 0 without actually making the system call.
 {% end %}
