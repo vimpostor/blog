@@ -13,9 +13,9 @@ taxonomies = [
 
 theme = "zola-aurora"
 
-[markdown]
-highlight_code = true
-highlight_theme = "ayu-dark"
+[markdown.highlighting]
+light_theme = "gruvbox-light-medium"
+dark_theme = "gruvbox-dark-medium"
 
 [extra]
 favicon = "static/icons/favicon.svg"
