@@ -50,7 +50,7 @@ xdg-settings set default-web-browser sphere.desktop
 
 Here it is in action:
 
-{{ video(url="https://github.com/vimpostor/sphere/assets/21310755/2895bf5d-7dea-4cab-862d-5accdbbd4697") }}
+{% <video url="https://github.com/vimpostor/sphere/assets/21310755/2895bf5d-7dea-4cab-862d-5accdbbd4697"> %}{% </video> %}
 
 Notice how the Spotify link is opened directly in the correct application instead of going the detour over the web browser?
 Obviously for this to work, the Spotify desktop application needs to support direct links, which it luckily does. It also can support a lot more formats, as we will see later.
@@ -82,7 +82,7 @@ Seriously though, don't use this, this is cursed beyond limits and doesn't handl
 
 Instead I implemented a much cleaner and robust solution: There is a [Spotify launcher](https://github.com/kpcyrd/spotify-launcher) application written in Rust, that is basically the official Spotify desktop application but with automatic updates added. So I went ahead and [implemented single instance support in the launcher directly](https://github.com/kpcyrd/spotify-launcher/pull/23), removing the need for any shell shenanigans. With this patch, opening Spotify links finally works like you would expect:
 
-{{ video(url="https://github.com/vimpostor/blog/assets/21310755/5443f4d4-aec2-401f-971d-e8b73c2a1788") }}
+{% <video url="https://github.com/vimpostor/blog/assets/21310755/5443f4d4-aec2-401f-971d-e8b73c2a1788"> %}{% </video> %}
 
 The track is played in the already running Spotify instance instead of opening a new one.
 Note that for now, you will have to [wait until the PR is merged](https://github.com/kpcyrd/spotify-launcher/pull/23#issuecomment-1522137173) or apply the patch manually.

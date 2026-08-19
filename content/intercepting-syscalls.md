@@ -40,9 +40,9 @@ prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
 ```
 
 This is necessary, as otherwise an unprivileged process could execute a [setuid](https://man.archlinux.org/man/setuid.2) program with a malicious filter attached.
-{% quote() %}
+{% <quote> %}
 Such a malicious filter might, for example, cause an attempt to use setuid to set the caller's user IDs to nonzero values to instead return 0 without actually making the system call.
-{% end %}
+{% </quote> %}
 
 On the supervisor side we have to make some extra checks due to a kernel bug that does not notify the supervisor when the supervised process exits. [Since Linux 6.11 the bug is resolved](https://lore.kernel.org/all/20240628021014.231976-2-avagin@google.com/), so in that case the `SECCOMP_IOCTL_NOTIF_RECV` loop is sufficient and will return with `ENOENT`, when the child terminates. However on older kernel versions that `ioctl` would hang forever, so an easy workaround is to install a signal handler for `SIGCHLD` with [sigaction](https://man.archlinux.org/man/sigaction.2).
 Just keep in mind to do the [old Unix dance of just using async-signal-safe functions](https://man.archlinux.org/man/signal-safety.7) inside of it, in particular no allocations or locks. Alternatively it is possible to [epoll](https://man.archlinux.org/man/epoll.7) the file descriptor returned when registering the BPF filter.
@@ -70,10 +70,10 @@ ret = ioctl(listener, SECCOMP_IOCTL_NOTIF_SEND, resp)
 However, it becomes slightly more involved if we want to modify the system call arguments.
 In that case we need to open the faked file on the supervisor side, pretend like the originally intended system call worked and return the file descriptor number of the faked file to the traced process. Except there is the huge problem that the file descriptor will obviously not be valid in the target process.
 
-{% quote() %}
+{% <quote> %}
 The curious reader might wonder why we do not just rewrite the system call arguments to the faked file, and then let the process continue the system call normally.
 Again, the argument points to memory inside the traced process. Rewriting memory is not transparent to the process, but injecting file descriptors is.
-{% end %}
+{% </quote> %}
 
 This is where [SECCOMP_IOCTL_NOTIF_ADDFD](https://man.archlinux.org/man/seccomp_unotify.2.html#SECCOMP_IOCTL_NOTIF_ADDFD) comes in. It will atomically both install a file descriptor directly into the file descriptor table of the target process and return it as part of the system call.
 
@@ -139,10 +139,10 @@ BPF_STMT(BPF_LD+BPF_W+BPF_ABS, offsetof(struct seccomp_data, arch))
 BPF_JUMP(BPF_JMP+BPF_JEQ+BPF_K, AUDIT_ARCH_X86_64, 0, 2)
 ```
 The first two instructions load the architecture and check that it matches our expectations. To understand why this is important, we can refer directly to the [common pitfalls section](https://www.kernel.org/doc/html/latest/userspace-api/seccomp_filter.html#pitfalls) in the official documentation:
-{% quote() %}
+{% <quote> %}
 On any architecture that supports multiple system call invocation conventions, the system call numbers may vary based on the specific invocation. If the numbers in the different calling conventions overlap, then checks in the filters may be abused.
 Always check the arch value!
-{% end %}
+{% </quote> %}
 
 The next two instructions check for something similar:
 ```c

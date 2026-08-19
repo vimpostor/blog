@@ -124,7 +124,7 @@ Then you can just pass the script to `git bisect run` and leave it running for a
 
 Now enjoy this automatic bisection over a range of 229 commits, finding the bad commit within only 2 minutes of iteratively compiling and testing different commits.
 
-{{ asciinema(id=570941) }}
+{% <asciinema id={570941}> %}{% </asciinema> %}
 
 In this case it was less of a regression and rather a slight change in behaviour, that I was able to work around downstream instead.
 
